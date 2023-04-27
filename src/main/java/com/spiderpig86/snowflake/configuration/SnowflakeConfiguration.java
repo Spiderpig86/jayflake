@@ -1,4 +1,4 @@
-package com.spiderpig86.snowflake.model;
+package com.spiderpig86.snowflake.configuration;
 
 import com.google.common.base.Preconditions;
 import lombok.ToString;

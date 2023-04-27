@@ -1,6 +1,7 @@
 package com.spiderpig86.snowflake.model;
 
 import com.google.common.base.Preconditions;
+import com.spiderpig86.snowflake.configuration.SnowflakeConfiguration;
 
 import javax.annotation.Nonnull;
 
