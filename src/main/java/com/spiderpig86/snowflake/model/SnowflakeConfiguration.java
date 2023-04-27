@@ -2,10 +2,12 @@ package com.spiderpig86.snowflake.model;
 
 import com.google.common.base.Preconditions;
 import lombok.ToString;
+import lombok.Value;
 
 /**
  * Configuration for the Snowflake id itself.
  */
+@Value
 @ToString
 public class SnowflakeConfiguration {
     /* Default bit configuration */
@@ -15,13 +17,13 @@ public class SnowflakeConfiguration {
     private static final int DEFAULT_WORKER_BITS = 6;
     private static final int DEFAULT_SEQUENCE_BITS = 12;
 
-    private final int timeStampBits;
-    private final int dataCenterBits;
-    private final int workerBits;
-    private final int sequenceBits;
+    int timeStampBits;
+    int dataCenterBits;
+    int workerBits;
+    int sequenceBits;
 
-    protected SnowflakeConfiguration(final int timeStampBits, final int dataCenterBits, final int workerBits,
-                                     final int sequenceBits) {
+    private SnowflakeConfiguration(final int timeStampBits, final int dataCenterBits, final int workerBits,
+                                   final int sequenceBits) {
         this.timeStampBits = timeStampBits;
         this.dataCenterBits = dataCenterBits;
         this.workerBits = workerBits;
@@ -73,5 +75,9 @@ public class SnowflakeConfiguration {
 
     public static Builder builder() {
         return new Builder();
+    }
+
+    public static SnowflakeConfiguration getDefault() {
+        return new Builder().build();
     }
 }
