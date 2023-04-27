@@ -1,5 +1,6 @@
 package com.spiderpig86.snowflake.model;
 
+import com.google.common.base.Preconditions;
 import lombok.ToString;
 
 /**
@@ -59,22 +60,14 @@ public class SnowflakeConfiguration {
         }
 
         private void validate() {
-            if (timeStampBits < 0 || timeStampBits >= BIT_LENGTH) {
-                throw new IllegalArgumentException("Given timeStampBits is invalid");
-            }
-            if (dataCenterBits < 0 || dataCenterBits >= BIT_LENGTH) {
-                throw new IllegalArgumentException("Given dataCenterBits is invalid");
-            }
-            if (workerBits < 0 || workerBits >= BIT_LENGTH) {
-                throw new IllegalArgumentException("Given workerBits is invalid");
-            }
-            if (sequenceBits < 0 || sequenceBits >= BIT_LENGTH) {
-                throw new IllegalArgumentException("Given sequenceBits is invalid");
-            }
+            Preconditions.checkArgument(timeStampBits < 0 || timeStampBits >= BIT_LENGTH, "Given timeStampBits is invalid");
+            Preconditions.checkArgument(dataCenterBits < 0 || dataCenterBits >= BIT_LENGTH, "Given dataCenterBits is invalid");
+            Preconditions.checkArgument(workerBits < 0 || workerBits >= BIT_LENGTH, "Given workerBits is invalid");
+            Preconditions.checkArgument(sequenceBits < 0 || sequenceBits >= BIT_LENGTH, "Given sequenceBits is invalid");
 
-            if (timeStampBits + dataCenterBits + workerBits + sequenceBits != BIT_LENGTH) {
-                throw new IllegalArgumentException(String.format("Sum of bit lengths does not equal %d", BIT_LENGTH));
-            }
+            final int totalLength = timeStampBits + dataCenterBits + workerBits + sequenceBits;
+            Preconditions.checkArgument(totalLength != BIT_LENGTH, String.format("Given bit lengths don't add up to " +
+                    "%d", BIT_LENGTH));
         }
     }
 
