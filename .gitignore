@@ -40,3 +40,8 @@ bin/
 
 ### Mac OS ###
 .DS_Store
+
+gradle/**
+.idea/**
+gradlew
+gradlew.bat
