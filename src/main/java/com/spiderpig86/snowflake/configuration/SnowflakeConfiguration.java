@@ -1,13 +1,13 @@
 package com.spiderpig86.snowflake.configuration;
 
 import com.google.common.base.Preconditions;
+import lombok.Getter;
 import lombok.ToString;
-import lombok.Value;
 
 /**
  * Configuration for the Snowflake id itself.
  */
-@Value
+@Getter
 @ToString
 public class SnowflakeConfiguration {
     /* Default bit configuration */
@@ -30,6 +30,27 @@ public class SnowflakeConfiguration {
         this.sequenceBits = sequenceBits;
     }
 
+    // Helper functions to determine max values
+    public long getMaxTimeStamp() {
+        return getMaxValueWithBits(this.timeStampBits);
+    }
+
+    public long getMaxDataCenter() {
+        return getMaxValueWithBits(this.dataCenterBits);
+    }
+
+    public long getMaxWorker() {
+        return getMaxValueWithBits(this.workerBits);
+    }
+
+    public long getMaxSequence() {
+        return getMaxValueWithBits(this.sequenceBits);
+    }
+
+    private long getMaxValueWithBits(final int bits) {
+        return (1L << bits) - 1;
+    }
+
     private static class Builder {
         int timeStampBits = DEFAULT_TIMESTAMP_BITS;
         int dataCenterBits = DEFAULT_DATA_CENTER_BITS;
@@ -46,12 +67,12 @@ public class SnowflakeConfiguration {
             return this;
         }
 
-        public Builder withWorkerBits(int workerBits) {
+        public Builder withWorkerBits(final int workerBits) {
             this.workerBits = workerBits;
             return this;
         }
 
-        public Builder withSequenceBits(int sequenceBits) {
+        public Builder withSequenceBits(final int sequenceBits) {
             this.sequenceBits = sequenceBits;
             return this;
         }
@@ -62,10 +83,11 @@ public class SnowflakeConfiguration {
         }
 
         private void validate() {
-            Preconditions.checkArgument(timeStampBits < 0 || timeStampBits >= BIT_LENGTH, "Given timeStampBits is invalid");
-            Preconditions.checkArgument(dataCenterBits < 0 || dataCenterBits >= BIT_LENGTH, "Given dataCenterBits is invalid");
-            Preconditions.checkArgument(workerBits < 0 || workerBits >= BIT_LENGTH, "Given workerBits is invalid");
-            Preconditions.checkArgument(sequenceBits < 0 || sequenceBits >= BIT_LENGTH, "Given sequenceBits is invalid");
+            Preconditions.checkArgument(timeStampBits >= 0 && timeStampBits < BIT_LENGTH, "Given timeStampBits is " +
+                    "invalid");
+            Preconditions.checkArgument(dataCenterBits >= 0 && dataCenterBits < BIT_LENGTH, "Given dataCenterBits is invalid");
+            Preconditions.checkArgument(workerBits >= 0 && workerBits < BIT_LENGTH, "Given workerBits is invalid");
+            Preconditions.checkArgument(sequenceBits >= 0 && sequenceBits < BIT_LENGTH, "Given sequenceBits is invalid");
 
             final int totalLength = timeStampBits + dataCenterBits + workerBits + sequenceBits;
             Preconditions.checkArgument(totalLength != BIT_LENGTH, String.format("Given bit lengths don't add up to " +
