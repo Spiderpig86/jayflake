@@ -21,7 +21,7 @@ public class GeneratorConfiguration {
     this.worker = worker;
   }
 
-  private static class Builder {
+  public static class Builder {
     Instant epoch;
     Long dataCenter;
     Long worker;
@@ -49,9 +49,16 @@ public class GeneratorConfiguration {
     private void validate() {
       Preconditions.checkNotNull(epoch, "Epoch cannot be null for GeneratorConfiguration");
       Preconditions.checkNotNull(
-          dataCenter, "Data center cannot be null for " + "GeneratorConfiguration");
+          dataCenter, "Data center cannot be null for GeneratorConfiguration");
       Preconditions.checkNotNull(worker, "Worker cannot be null for GeneratorConfiguration");
+
+      Preconditions.checkArgument(dataCenter >= 0, "Data center must be non-negative");
+      Preconditions.checkArgument(worker >= 0, "Worker must be non-negative.");
     }
+  }
+
+  public static GeneratorConfiguration.Builder builder() {
+    return new Builder();
   }
 
   public static GeneratorConfiguration getDefault(@Nonnull final Instant epoch) {

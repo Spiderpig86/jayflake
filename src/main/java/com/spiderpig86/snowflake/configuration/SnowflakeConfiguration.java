@@ -1,5 +1,6 @@
 package com.spiderpig86.snowflake.configuration;
 
+import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Preconditions;
 import lombok.Getter;
 import lombok.ToString;
@@ -9,35 +10,35 @@ import lombok.ToString;
 @ToString
 public class SnowflakeConfiguration {
   /* Default bit configuration */
-  private static final int BIT_LENGTH = 63; // 64 bits, but sign bit is ignored
-  private static final int DEFAULT_TIMESTAMP_BITS = 41;
-  private static final int DEFAULT_DATA_CENTER_BITS = 4;
-  private static final int DEFAULT_WORKER_BITS = 6;
-  private static final int DEFAULT_SEQUENCE_BITS = 12;
+  @VisibleForTesting static final int BIT_LENGTH = 63; // 64 bits, but sign bit is ignored
+  @VisibleForTesting static final int DEFAULT_TIMESTAMP_BITS = 41;
+  @VisibleForTesting static final int DEFAULT_DATA_CENTER_BITS = 4;
+  @VisibleForTesting static final int DEFAULT_WORKER_BITS = 6;
+  @VisibleForTesting static final int DEFAULT_SEQUENCE_BITS = 12;
 
-  int timeStampBits;
-  int dataCenterBits;
-  int workerBits;
-  int sequenceBits;
+  private final int timestampBits;
+  private final int datacenterBits;
+  private final int workerBits;
+  private final int sequenceBits;
 
   private SnowflakeConfiguration(
-      final int timeStampBits,
-      final int dataCenterBits,
+      final int timestampBits,
+      final int datacenterBits,
       final int workerBits,
       final int sequenceBits) {
-    this.timeStampBits = timeStampBits;
-    this.dataCenterBits = dataCenterBits;
+    this.timestampBits = timestampBits;
+    this.datacenterBits = datacenterBits;
     this.workerBits = workerBits;
     this.sequenceBits = sequenceBits;
   }
 
   // Helper functions to determine max values
-  public long getMaxTimeStamp() {
-    return getMaxValueWithBits(this.timeStampBits);
+  public long getMaxTimestamp() {
+    return getMaxValueWithBits(this.timestampBits);
   }
 
-  public long getMaxDataCenter() {
-    return getMaxValueWithBits(this.dataCenterBits);
+  public long getMaxDatacenter() {
+    return getMaxValueWithBits(this.datacenterBits);
   }
 
   public long getMaxWorker() {
@@ -52,19 +53,19 @@ public class SnowflakeConfiguration {
     return (1L << bits) - 1;
   }
 
-  private static class Builder {
-    int timeStampBits = DEFAULT_TIMESTAMP_BITS;
-    int dataCenterBits = DEFAULT_DATA_CENTER_BITS;
-    int workerBits = DEFAULT_WORKER_BITS;
-    int sequenceBits = DEFAULT_SEQUENCE_BITS;
+  public static class Builder {
+    int timestampBits;
+    int datacenterBits;
+    int workerBits;
+    int sequenceBits;
 
-    public Builder withTimeStampBits(final int timeStampBits) {
-      this.timeStampBits = timeStampBits;
+    public Builder withTimestampBits(final int timestampBits) {
+      this.timestampBits = timestampBits;
       return this;
     }
 
-    public Builder withDataCenterBits(final int dataCenterBits) {
-      this.dataCenterBits = dataCenterBits;
+    public Builder withDatacenterBits(final int datacenterBits) {
+      this.datacenterBits = datacenterBits;
       return this;
     }
 
@@ -80,23 +81,23 @@ public class SnowflakeConfiguration {
 
     public SnowflakeConfiguration build() {
       validate();
-      return new SnowflakeConfiguration(timeStampBits, dataCenterBits, workerBits, sequenceBits);
+      return new SnowflakeConfiguration(timestampBits, datacenterBits, workerBits, sequenceBits);
     }
 
     private void validate() {
       Preconditions.checkArgument(
-          timeStampBits >= 0 && timeStampBits < BIT_LENGTH, "Given timeStampBits is " + "invalid");
+          timestampBits >= 0 && timestampBits < BIT_LENGTH, "Given timeStampBits is invalid");
       Preconditions.checkArgument(
-          dataCenterBits >= 0 && dataCenterBits < BIT_LENGTH, "Given dataCenterBits is invalid");
+          datacenterBits >= 0 && datacenterBits < BIT_LENGTH, "Given dataCenterBits is invalid");
       Preconditions.checkArgument(
           workerBits >= 0 && workerBits < BIT_LENGTH, "Given workerBits is invalid");
       Preconditions.checkArgument(
           sequenceBits >= 0 && sequenceBits < BIT_LENGTH, "Given sequenceBits is invalid");
 
-      final int totalLength = timeStampBits + dataCenterBits + workerBits + sequenceBits;
+      final int totalLength = timestampBits + datacenterBits + workerBits + sequenceBits;
       Preconditions.checkArgument(
-          totalLength != BIT_LENGTH,
-          String.format("Given bit lengths don't add up to " + "%d", BIT_LENGTH));
+          totalLength == BIT_LENGTH,
+          String.format("Given bit lengths don't add up to %d", BIT_LENGTH));
     }
   }
 
@@ -105,6 +106,11 @@ public class SnowflakeConfiguration {
   }
 
   public static SnowflakeConfiguration getDefault() {
-    return new Builder().build();
+    return new Builder()
+        .withTimestampBits(DEFAULT_TIMESTAMP_BITS)
+        .withDatacenterBits(DEFAULT_DATA_CENTER_BITS)
+        .withWorkerBits(DEFAULT_WORKER_BITS)
+        .withSequenceBits(DEFAULT_SEQUENCE_BITS)
+        .build();
   }
 }

@@ -23,10 +23,10 @@ public class Snowflake {
       final long sequence,
       final @Nonnull SnowflakeConfiguration snowflakeConfiguration) {
     final int timestampShift =
-        snowflakeConfiguration.getDataCenterBits()
+        snowflakeConfiguration.getDatacenterBits()
             + snowflakeConfiguration.getWorkerBits()
             + snowflakeConfiguration.getSequenceBits();
-    final int dataCenterShift = timestampShift - snowflakeConfiguration.getDataCenterBits();
+    final int dataCenterShift = timestampShift - snowflakeConfiguration.getDatacenterBits();
     final int workerShift = dataCenterShift - snowflakeConfiguration.getWorkerBits();
 
     this.value =
@@ -40,8 +40,8 @@ public class Snowflake {
   public long getTimeStamp() {
     return getValueWithMask(
         value,
-        snowflakeConfiguration.getTimeStampBits(),
-        snowflakeConfiguration.getDataCenterBits()
+        snowflakeConfiguration.getTimestampBits(),
+        snowflakeConfiguration.getDatacenterBits()
             + snowflakeConfiguration.getWorkerBits()
             + snowflakeConfiguration.getSequenceBits());
   }
@@ -49,7 +49,7 @@ public class Snowflake {
   public long getDataCenter() {
     return getValueWithMask(
         value,
-        snowflakeConfiguration.getDataCenterBits(),
+        snowflakeConfiguration.getDatacenterBits(),
         snowflakeConfiguration.getWorkerBits() + snowflakeConfiguration.getSequenceBits());
   }
 

@@ -75,7 +75,7 @@ public class SnowflakeGenerator {
 
   public Snowflake nextUnsafe() {
     long timestamp =
-        getValueWithMask(System.currentTimeMillis(), snowflakeConfiguration.getTimeStampBits(), 0);
+        getValueWithMask(System.currentTimeMillis(), snowflakeConfiguration.getTimestampBits(), 0);
     if (previousTimestamp == timestamp) {
       if (sequence >= maxSequence) {
         // Handle overflow
@@ -103,7 +103,7 @@ public class SnowflakeGenerator {
     // Ensure that the provided GeneratorConfiguration values are in range
     Preconditions.checkArgument(
         generatorConfiguration.getDataCenter() >= 0
-            && generatorConfiguration.getDataCenter() <= snowflakeConfiguration.getMaxDataCenter(),
+            && generatorConfiguration.getDataCenter() <= snowflakeConfiguration.getMaxDatacenter(),
         "Provided data center value is out of bounds.");
     Preconditions.checkArgument(
         generatorConfiguration.getWorker() >= 0
