@@ -29,7 +29,7 @@ tasks.test {
 
 spotless {
     java {
-        target("**/*.java") // configure the files to apply the formatting to
+        target("src/**/*.java") // configure the files to apply the formatting to
         googleJavaFormat() // apply the Google Java formatter
     }
 }
