@@ -1,5 +1,6 @@
 plugins {
     id("java")
+    id("com.diffplug.spotless") version "6.18.0"
 }
 
 group = "org.example"
@@ -24,4 +25,11 @@ dependencies {
 
 tasks.test {
     useJUnitPlatform()
+}
+
+spotless {
+    java {
+        target("**/*.java") // configure the files to apply the formatting to
+        googleJavaFormat() // apply the Google Java formatter
+    }
 }
