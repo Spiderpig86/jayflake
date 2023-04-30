@@ -59,6 +59,8 @@ public class SnowflakeConfigurationTest {
         Arguments.of(41, -1, 10, 12, IllegalArgumentException.class),
         Arguments.of(41, 11, -1, 12, IllegalArgumentException.class),
         Arguments.of(41, 4, 19, -1, IllegalArgumentException.class),
+        Arguments.of(0, 45, 6, 12, IllegalArgumentException.class),
+        Arguments.of(12, 45, 6, 0, IllegalArgumentException.class),
         Arguments.of(1, 1, 1, 1, IllegalArgumentException.class));
   }
 

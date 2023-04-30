@@ -86,13 +86,13 @@ public class SnowflakeConfiguration {
 
     private void validate() {
       Preconditions.checkArgument(
-          timestampBits >= 0 && timestampBits < BIT_LENGTH, "Given timeStampBits is invalid");
+          timestampBits >= 1 && timestampBits < BIT_LENGTH, "Given timeStampBits is invalid");
       Preconditions.checkArgument(
           datacenterBits >= 0 && datacenterBits < BIT_LENGTH, "Given dataCenterBits is invalid");
       Preconditions.checkArgument(
           workerBits >= 0 && workerBits < BIT_LENGTH, "Given workerBits is invalid");
       Preconditions.checkArgument(
-          sequenceBits >= 0 && sequenceBits < BIT_LENGTH, "Given sequenceBits is invalid");
+          sequenceBits >= 1 && sequenceBits < BIT_LENGTH, "Given sequenceBits is invalid");
 
       final int totalLength = timestampBits + datacenterBits + workerBits + sequenceBits;
       Preconditions.checkArgument(
