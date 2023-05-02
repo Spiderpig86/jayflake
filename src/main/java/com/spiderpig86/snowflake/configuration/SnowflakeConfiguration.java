@@ -17,17 +17,17 @@ public class SnowflakeConfiguration {
   @VisibleForTesting static final int DEFAULT_SEQUENCE_BITS = 12;
 
   private final int timestampBits;
-  private final int datacenterBits;
+  private final int dataCenterBits;
   private final int workerBits;
   private final int sequenceBits;
 
   private SnowflakeConfiguration(
       final int timestampBits,
-      final int datacenterBits,
+      final int dataCenterBits,
       final int workerBits,
       final int sequenceBits) {
     this.timestampBits = timestampBits;
-    this.datacenterBits = datacenterBits;
+    this.dataCenterBits = dataCenterBits;
     this.workerBits = workerBits;
     this.sequenceBits = sequenceBits;
   }
@@ -37,8 +37,8 @@ public class SnowflakeConfiguration {
     return getMaxValueWithBits(this.timestampBits);
   }
 
-  public long getMaxDatacenter() {
-    return getMaxValueWithBits(this.datacenterBits);
+  public long getMaxDataCenter() {
+    return getMaxValueWithBits(this.dataCenterBits);
   }
 
   public long getMaxWorker() {

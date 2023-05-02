@@ -5,7 +5,6 @@ import static com.spiderpig86.snowflake.Utils.getValueWithMask;
 import com.google.common.base.Preconditions;
 import com.spiderpig86.snowflake.configuration.GeneratorConfiguration;
 import com.spiderpig86.snowflake.configuration.SnowflakeConfiguration;
-import com.spiderpig86.snowflake.model.Snowflake;
 import com.spiderpig86.snowflake.time.DefaultTime;
 import com.spiderpig86.snowflake.time.Time;
 import java.time.Instant;
@@ -76,6 +75,11 @@ public class SnowflakeGenerator {
   public Snowflake nextUnsafe() {
     long timestamp =
         getValueWithMask(System.currentTimeMillis(), snowflakeConfiguration.getTimestampBits(), 0);
+    if (timestamp < previousTimestamp) {
+      // Current timestamp should not be behind the previous recorded one, throw exception
+      throw new IllegalStateException("Current timestamp is behind previous timestamp");
+    }
+
     if (previousTimestamp == timestamp) {
       if (sequence >= maxSequence) {
         // Handle overflow
@@ -89,6 +93,9 @@ public class SnowflakeGenerator {
 
       // Times are the same, increment the sequence
       sequence++;
+    } else {
+      // Reset sequence for different timestamp
+      sequence = 0;
     }
 
     return new Snowflake(
@@ -102,8 +109,13 @@ public class SnowflakeGenerator {
   private void validateConfigurations() {
     // Ensure that the provided GeneratorConfiguration values are in range
     Preconditions.checkArgument(
+        generatorConfiguration.getEpoch().toEpochMilli() >= 0
+            && generatorConfiguration.getEpoch().toEpochMilli()
+                <= snowflakeConfiguration.getMaxTimestamp(),
+        "Provided timestamp value is out of bounds.");
+    Preconditions.checkArgument(
         generatorConfiguration.getDataCenter() >= 0
-            && generatorConfiguration.getDataCenter() <= snowflakeConfiguration.getMaxDatacenter(),
+            && generatorConfiguration.getDataCenter() <= snowflakeConfiguration.getMaxDataCenter(),
         "Provided data center value is out of bounds.");
     Preconditions.checkArgument(
         generatorConfiguration.getWorker() >= 0

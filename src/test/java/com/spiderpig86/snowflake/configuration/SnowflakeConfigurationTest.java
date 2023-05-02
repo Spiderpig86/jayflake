@@ -24,7 +24,7 @@ public class SnowflakeConfigurationTest {
                     .build());
 
     Assertions.assertEquals(timestampBits, configuration.getTimestampBits());
-    Assertions.assertEquals(datacenterBits, configuration.getDatacenterBits());
+    Assertions.assertEquals(datacenterBits, configuration.getDataCenterBits());
     Assertions.assertEquals(workerBits, configuration.getWorkerBits());
     Assertions.assertEquals(sequenceBits, configuration.getSequenceBits());
   }
@@ -72,7 +72,7 @@ public class SnowflakeConfigurationTest {
     Assertions.assertEquals(
         SnowflakeConfiguration.DEFAULT_TIMESTAMP_BITS, configuration.getTimestampBits());
     Assertions.assertEquals(
-        SnowflakeConfiguration.DEFAULT_DATA_CENTER_BITS, configuration.getDatacenterBits());
+        SnowflakeConfiguration.DEFAULT_DATA_CENTER_BITS, configuration.getDataCenterBits());
     Assertions.assertEquals(
         SnowflakeConfiguration.DEFAULT_WORKER_BITS, configuration.getWorkerBits());
     Assertions.assertEquals(
@@ -88,7 +88,7 @@ public class SnowflakeConfigurationTest {
       long expectedMaxWorker,
       long expectedMaxSequence) {
     Assertions.assertEquals(expectedMaxTimestamp, configuration.getMaxTimestamp());
-    Assertions.assertEquals(expectedMaxDatacenter, configuration.getMaxDatacenter());
+    Assertions.assertEquals(expectedMaxDatacenter, configuration.getMaxDataCenter());
     Assertions.assertEquals(expectedMaxWorker, configuration.getMaxWorker());
     Assertions.assertEquals(expectedMaxSequence, configuration.getMaxSequence());
   }
