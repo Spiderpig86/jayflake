@@ -1,5 +1,10 @@
 package com.spiderpig86.snowflake.time;
 
+import com.google.common.base.Preconditions;
+import org.checkerframework.checker.units.qual.C;
+
+import javax.annotation.Nonnull;
+import java.time.Clock;
 import java.time.Instant;
 
 /**
@@ -9,26 +14,36 @@ import java.time.Instant;
  * This allows anyone to customize how much time they need to store for their ids based on their own
  * requirements.
  */
-public interface Time {
+public abstract class Time {
+
+  private final Clock clock;
+
+  Time(@Nonnull final Clock clock) {
+    this.clock = Preconditions.checkNotNull(clock);
+  }
 
   /**
    * Returns the epoch, or the start time, of when the ticks are based off of.
    *
    * @return the epoch.
    */
-  Instant getEpoch();
+  abstract Instant getEpoch();
 
   /**
    * Returns the tick value relative to the epoch time.
    *
    * @return the current tick.
    */
-  long getTick();
+  abstract long getTick();
 
   /**
    * Returns the length of time each tick is.
    *
    * @return the duration of a tick.
    */
-  long getTickDurationMs();
+  abstract long getTickDurationMs();
+
+  Clock getClock() {
+    return clock;
+  }
 }

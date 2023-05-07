@@ -2,11 +2,14 @@ package com.spiderpig86.snowflake;
 
 import static com.spiderpig86.snowflake.Utils.getValueWithMask;
 
+import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Preconditions;
 import com.spiderpig86.snowflake.configuration.GeneratorConfiguration;
 import com.spiderpig86.snowflake.configuration.SnowflakeConfiguration;
 import com.spiderpig86.snowflake.time.DefaultTime;
 import com.spiderpig86.snowflake.time.Time;
+
+import java.time.Clock;
 import java.time.Instant;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
@@ -46,8 +49,8 @@ public class SnowflakeGenerator {
     final Instant now = Instant.now();
     return new SnowflakeGenerator(
         SnowflakeConfiguration.getDefault(),
-        GeneratorConfiguration.getDefault(now),
-        new DefaultTime(now));
+            GeneratorConfiguration.getDefault(now),
+        new DefaultTime(getClock(), now));
   }
 
   public static SnowflakeGenerator create(
@@ -121,5 +124,9 @@ public class SnowflakeGenerator {
         generatorConfiguration.getWorker() >= 0
             && generatorConfiguration.getWorker() <= snowflakeConfiguration.getMaxWorker(),
         "Provided worker value is out of bounds.");
+  }
+
+  private static Clock getClock() {
+    return Clock.systemDefaultZone();
   }
 }
