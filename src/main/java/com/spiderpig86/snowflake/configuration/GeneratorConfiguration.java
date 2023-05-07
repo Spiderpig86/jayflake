@@ -1,7 +1,6 @@
 package com.spiderpig86.snowflake.configuration;
 
 import com.google.common.base.Preconditions;
-import java.time.Instant;
 import javax.annotation.Nonnull;
 import lombok.Getter;
 import lombok.ToString;
@@ -10,26 +9,17 @@ import lombok.ToString;
 @ToString
 public class GeneratorConfiguration {
 
-  private final Instant epoch;
   private final long dataCenter;
   private final long worker;
 
-  private GeneratorConfiguration(
-      @Nonnull final Instant epoch, final long dataCenter, final long worker) {
-    this.epoch = Preconditions.checkNotNull(epoch);
+  private GeneratorConfiguration(final long dataCenter, final long worker) {
     this.dataCenter = dataCenter;
     this.worker = worker;
   }
 
   public static class Builder {
-    Instant epoch;
     Long dataCenter;
     Long worker;
-
-    public Builder withEpoch(@Nonnull final Instant epoch) {
-      this.epoch = epoch;
-      return this;
-    }
 
     public Builder withDataCenter(@Nonnull final Long dataCenter) {
       this.dataCenter = dataCenter;
@@ -43,11 +33,10 @@ public class GeneratorConfiguration {
 
     public GeneratorConfiguration build() {
       validate();
-      return new GeneratorConfiguration(this.epoch, this.dataCenter, this.worker);
+      return new GeneratorConfiguration(this.dataCenter, this.worker);
     }
 
     private void validate() {
-      Preconditions.checkNotNull(epoch, "Epoch cannot be null for GeneratorConfiguration");
       Preconditions.checkNotNull(
           dataCenter, "Data center cannot be null for GeneratorConfiguration");
       Preconditions.checkNotNull(worker, "Worker cannot be null for GeneratorConfiguration");
@@ -61,12 +50,7 @@ public class GeneratorConfiguration {
     return new Builder();
   }
 
-  public static GeneratorConfiguration getDefault(@Nonnull final Instant epoch) {
-    Preconditions.checkNotNull(epoch);
-    return new GeneratorConfiguration.Builder()
-        .withEpoch(epoch)
-        .withDataCenter(0L)
-        .withWorker(0L)
-        .build();
+  public static GeneratorConfiguration getDefault() {
+    return new GeneratorConfiguration.Builder().withDataCenter(0L).withWorker(0L).build();
   }
 }
