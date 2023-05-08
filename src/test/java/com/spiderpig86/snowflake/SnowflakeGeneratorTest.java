@@ -1,7 +1,7 @@
 package com.spiderpig86.snowflake;
 
-import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 import com.spiderpig86.snowflake.configuration.GeneratorConfiguration;
 import com.spiderpig86.snowflake.configuration.SnowflakeConfiguration;
@@ -9,8 +9,6 @@ import com.spiderpig86.snowflake.time.DefaultTime;
 import com.spiderpig86.snowflake.time.Time;
 import java.time.Clock;
 import java.time.Instant;
-import java.time.LocalDateTime;
-import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -22,7 +20,7 @@ import java.util.concurrent.Future;
 import java.util.stream.Stream;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -33,20 +31,14 @@ import org.mockito.junit.jupiter.MockitoExtension;
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @ExtendWith(MockitoExtension.class)
 public class SnowflakeGeneratorTest {
-  private static final long EPOCH_MILLIS = Instant.ofEpochSecond(1222839884).toEpochMilli();
-  private static final long NEGATIVE = -1;
+  private static final long EPOCH_MILLIS = Instant.ofEpochSecond(1580544000).toEpochMilli();
   private static final long ANY_VALID_NUMBER = 1;
 
   private Clock clock;
 
   @BeforeAll
   public void start() {
-    clock = mock(Clock.class);
-  }
-
-  @BeforeEach
-  public void setup() {
-    lenient().when(clock.millis()).thenReturn(EPOCH_MILLIS);
+    clock = Clock.systemDefaultZone();
   }
 
   @ParameterizedTest
@@ -64,35 +56,40 @@ public class SnowflakeGeneratorTest {
     return Stream.of(
         // Timestamp too large
         Arguments.of(
-            SnowflakeConfiguration.getDefault(),
-            GeneratorConfiguration.getDefault(),
-            new DefaultTime(clock, LocalDateTime.of(9000, 1, 1, 1, 1).toInstant(ZoneOffset.UTC))),
-        // Data center is too large
-        Arguments.of(
             SnowflakeConfiguration.builder()
-                .withTimestampBits(41)
-                .withDatacenterBits(2)
+                .withTimestampBits(11)
+                .withDatacenterBits(32)
                 .withWorkerBits(8)
                 .withSequenceBits(12)
                 .build(),
-            GeneratorConfiguration.builder()
-                .withDataCenter(6L)
-                .withWorker(ANY_VALID_NUMBER)
-                .build(),
-            new DefaultTime(clock, Instant.now())),
-        // Data center is too large
-        Arguments.of(
-            SnowflakeConfiguration.builder()
-                .withTimestampBits(41)
-                .withDatacenterBits(8)
-                .withWorkerBits(2)
-                .withSequenceBits(12)
-                .build(),
-            GeneratorConfiguration.builder()
-                .withDataCenter(ANY_VALID_NUMBER)
-                .withWorker(6L)
-                .build(),
-            new DefaultTime(clock, Instant.now())));
+            GeneratorConfiguration.getDefault(),
+            DefaultTime.getDefault(clock),
+            // Data center is too large
+            Arguments.of(
+                SnowflakeConfiguration.builder()
+                    .withTimestampBits(41)
+                    .withDatacenterBits(2)
+                    .withWorkerBits(8)
+                    .withSequenceBits(12)
+                    .build(),
+                GeneratorConfiguration.builder()
+                    .withDataCenter(6L)
+                    .withWorker(ANY_VALID_NUMBER)
+                    .build(),
+                new DefaultTime(clock, Instant.now())),
+            // Data center is too large
+            Arguments.of(
+                SnowflakeConfiguration.builder()
+                    .withTimestampBits(41)
+                    .withDatacenterBits(8)
+                    .withWorkerBits(2)
+                    .withSequenceBits(12)
+                    .build(),
+                GeneratorConfiguration.builder()
+                    .withDataCenter(ANY_VALID_NUMBER)
+                    .withWorker(6L)
+                    .build(),
+                new DefaultTime(clock, Instant.now()))));
   }
 
   @ParameterizedTest
@@ -147,10 +144,40 @@ public class SnowflakeGeneratorTest {
             SnowflakeGenerator.create(
                 SnowflakeConfiguration.builder()
                     .withTimestampBits(45)
-                    .withWorkerBits(10)
-                    .withSequenceBits(8)
+                    .withWorkerBits(6)
+                    .withSequenceBits(12)
                     .build(),
                 GeneratorConfiguration.builder().withDataCenter(0L).withWorker(5L).build(),
                 DefaultTime.getDefault(clock))));
+  }
+
+  @Test
+  public void next_generateSequenceForSameTimestamp_success() {
+    // Arrange
+    Clock c = mock(Clock.class);
+    when(c.millis()).thenReturn(EPOCH_MILLIS);
+    int generateCount = 5;
+
+    // Act
+    List<Snowflake> snowflakes = new ArrayList<>();
+    SnowflakeGenerator generator =
+        SnowflakeGenerator.create(
+            SnowflakeConfiguration.getDefault(),
+            GeneratorConfiguration.builder().withDataCenter(0L).withWorker(5L).build(),
+            DefaultTime.getDefault(c));
+    for (int i = 0; i < generateCount; i++) {
+      snowflakes.add(generator.next());
+    }
+
+    // Assert
+    Assertions.assertEquals(generateCount, snowflakes.size());
+    int seq = 0;
+    for (Snowflake snowflake : snowflakes) {
+      Assertions.assertEquals(EPOCH_MILLIS - Utils.DEFAULT_EPOCH, snowflake.getTimeStamp());
+      Assertions.assertEquals(0, snowflake.getDataCenter());
+      Assertions.assertEquals(5, snowflake.getWorker());
+      Assertions.assertEquals(seq, snowflake.getSequence());
+      seq++;
+    }
   }
 }

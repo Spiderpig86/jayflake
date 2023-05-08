@@ -1,7 +1,5 @@
 package com.spiderpig86.snowflake;
 
-import static com.spiderpig86.snowflake.Utils.getValueWithMask;
-
 import com.google.common.base.Preconditions;
 import com.spiderpig86.snowflake.configuration.GeneratorConfiguration;
 import com.spiderpig86.snowflake.configuration.SnowflakeConfiguration;
@@ -67,8 +65,7 @@ public class SnowflakeGenerator {
   }
 
   private Snowflake generateSnowflake() {
-    long timestamp =
-        getValueWithMask(getClock().millis(), snowflakeConfiguration.getTimestampBits(), 0);
+    long timestamp = time.getTick();
     if (timestamp < previousTimestamp) {
       // Current timestamp should not be behind the previous recorded one, throw exception
       throw new IllegalStateException("Current timestamp is behind previous timestamp");
