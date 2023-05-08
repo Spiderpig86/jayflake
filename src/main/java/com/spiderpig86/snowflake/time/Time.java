@@ -15,17 +15,15 @@ import javax.annotation.Nonnull;
 public abstract class Time {
 
   private final Clock clock;
+  private final Instant epoch;
 
-  Time(@Nonnull final Clock clock) {
+  Time(@Nonnull final Clock clock, @Nonnull final Instant epoch) {
     this.clock = Preconditions.checkNotNull(clock);
-  }
+    this.epoch = Preconditions.checkNotNull(epoch);
 
-  /**
-   * Returns the epoch, or the start time, of when the ticks are based off of.
-   *
-   * @return the epoch.
-   */
-  public abstract Instant getEpoch();
+    Preconditions.checkArgument(
+        clock.millis() >= epoch.toEpochMilli(), "Epoch is before current time");
+  }
 
   /**
    * Returns the tick value relative to the epoch time.
@@ -40,6 +38,16 @@ public abstract class Time {
    * @return the duration of a tick.
    */
   public abstract long getTickDurationMs();
+
+  /**
+   * Returns the epoch, or the start time, of when the ticks are based off of.
+   *
+   * @return the epoch.
+   */
+  @Nonnull
+  public Instant getEpoch() {
+    return epoch;
+  }
 
   Clock getClock() {
     return clock;

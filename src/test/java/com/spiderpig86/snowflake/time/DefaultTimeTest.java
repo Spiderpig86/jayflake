@@ -1,6 +1,6 @@
 package com.spiderpig86.snowflake.time;
 
-import static com.spiderpig86.snowflake.time.DefaultTime.DEFAULT_EPOCH;
+import static com.spiderpig86.snowflake.Utils.DEFAULT_EPOCH;
 import static org.mockito.Mockito.when;
 
 import java.time.Clock;
