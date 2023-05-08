@@ -2,15 +2,12 @@ package com.spiderpig86.snowflake;
 
 import static com.spiderpig86.snowflake.Utils.getValueWithMask;
 
-import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Preconditions;
 import com.spiderpig86.snowflake.configuration.GeneratorConfiguration;
 import com.spiderpig86.snowflake.configuration.SnowflakeConfiguration;
 import com.spiderpig86.snowflake.time.DefaultTime;
 import com.spiderpig86.snowflake.time.Time;
-
 import java.time.Clock;
-import java.time.Instant;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.logging.Logger;
@@ -46,11 +43,10 @@ public class SnowflakeGenerator {
   }
 
   public static SnowflakeGenerator createDefault() {
-    final Instant now = Instant.now();
     return new SnowflakeGenerator(
         SnowflakeConfiguration.getDefault(),
-            GeneratorConfiguration.getDefault(now),
-        new DefaultTime(getClock(), now));
+        GeneratorConfiguration.getDefault(),
+        DefaultTime.getDefault(getClock()));
   }
 
   public static SnowflakeGenerator create(
@@ -62,13 +58,8 @@ public class SnowflakeGenerator {
 
   @Nullable
   public Snowflake next() {
-    final boolean lockAcquired = lock.tryLock();
-    if (!lockAcquired) {
-      logger.warning("Failed to acquire lock");
-      return null;
-    }
-
     try {
+      lock.lock();
       return nextUnsafe();
     } finally {
       lock.unlock();
@@ -77,7 +68,7 @@ public class SnowflakeGenerator {
 
   public Snowflake nextUnsafe() {
     long timestamp =
-        getValueWithMask(System.currentTimeMillis(), snowflakeConfiguration.getTimestampBits(), 0);
+        getValueWithMask(getClock().millis(), snowflakeConfiguration.getTimestampBits(), 0);
     if (timestamp < previousTimestamp) {
       // Current timestamp should not be behind the previous recorded one, throw exception
       throw new IllegalStateException("Current timestamp is behind previous timestamp");
@@ -101,6 +92,8 @@ public class SnowflakeGenerator {
       sequence = 0;
     }
 
+    previousTimestamp = timestamp;
+
     return new Snowflake(
         timestamp,
         generatorConfiguration.getDataCenter(),
@@ -112,9 +105,8 @@ public class SnowflakeGenerator {
   private void validateConfigurations() {
     // Ensure that the provided GeneratorConfiguration values are in range
     Preconditions.checkArgument(
-        generatorConfiguration.getEpoch().toEpochMilli() >= 0
-            && generatorConfiguration.getEpoch().toEpochMilli()
-                <= snowflakeConfiguration.getMaxTimestamp(),
+        time.getEpoch().toEpochMilli() >= 0
+            && time.getEpoch().toEpochMilli() <= snowflakeConfiguration.getMaxTimestamp(),
         "Provided timestamp value is out of bounds.");
     Preconditions.checkArgument(
         generatorConfiguration.getDataCenter() >= 0
