@@ -1,6 +1,5 @@
 package com.spiderpig86.snowflake.configuration;
 
-import java.time.Instant;
 import java.util.stream.Stream;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;

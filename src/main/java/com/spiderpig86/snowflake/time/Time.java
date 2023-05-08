@@ -1,11 +1,9 @@
 package com.spiderpig86.snowflake.time;
 
 import com.google.common.base.Preconditions;
-import org.checkerframework.checker.units.qual.C;
-
-import javax.annotation.Nonnull;
 import java.time.Clock;
 import java.time.Instant;
+import javax.annotation.Nonnull;
 
 /**
  * Base interface for all Time metadata. Subclasses will be used to configure how the timestamp
@@ -27,21 +25,21 @@ public abstract class Time {
    *
    * @return the epoch.
    */
-  abstract Instant getEpoch();
+  public abstract Instant getEpoch();
 
   /**
    * Returns the tick value relative to the epoch time.
    *
    * @return the current tick.
    */
-  abstract long getTick();
+  public abstract long getTick();
 
   /**
    * Returns the length of time each tick is.
    *
    * @return the duration of a tick.
    */
-  abstract long getTickDurationMs();
+  public abstract long getTickDurationMs();
 
   Clock getClock() {
     return clock;

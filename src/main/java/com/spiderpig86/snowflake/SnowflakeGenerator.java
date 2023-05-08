@@ -60,13 +60,13 @@ public class SnowflakeGenerator {
   public Snowflake next() {
     try {
       lock.lock();
-      return nextUnsafe();
+      return generateSnowflake();
     } finally {
       lock.unlock();
     }
   }
 
-  public Snowflake nextUnsafe() {
+  private Snowflake generateSnowflake() {
     long timestamp =
         getValueWithMask(getClock().millis(), snowflakeConfiguration.getTimestampBits(), 0);
     if (timestamp < previousTimestamp) {
