@@ -2,8 +2,9 @@ package com.spiderpig86.snowflake.lib;
 
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
-import com.spiderpig86.snowflake.time.Time;
+import java.util.Objects;
 import java.util.concurrent.ThreadLocalRandom;
+import java.util.function.Supplier;
 import javax.annotation.Nonnull;
 
 @FunctionalInterface
@@ -32,18 +33,17 @@ public interface OverflowHandler {
     };
   }
 
-  static OverflowHandler overflowSpinWait(@Nonnull final Time time) {
+  static OverflowHandler overflowSpinWait(
+      @Nonnull final Supplier<Long> reference, @Nonnull final Supplier<Long> actual) {
     return () -> {
-      long currentTick;
       do {
         Thread.onSpinWait(); // Free up some CPU cycles
-        currentTick = time.getTick();
-      } while (currentTick == time.getTick());
+      } while (Objects.equals(actual.get(), reference.get()));
     };
   }
 
   static OverflowHandler overflowThrowException(@Nonnull final String fieldName) {
-    Preconditions.checkArgument(Strings.isNullOrEmpty(fieldName), "Field name must not be empty.");
+    Preconditions.checkArgument(!Strings.isNullOrEmpty(fieldName), "Field name must not be empty.");
     return () -> {
       throw new RuntimeException(String.format("%s has overflowed.", fieldName));
     };

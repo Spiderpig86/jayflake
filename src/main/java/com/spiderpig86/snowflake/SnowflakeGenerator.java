@@ -3,9 +3,11 @@ package com.spiderpig86.snowflake;
 import com.google.common.base.Preconditions;
 import com.spiderpig86.snowflake.configuration.GeneratorConfiguration;
 import com.spiderpig86.snowflake.configuration.SnowflakeConfiguration;
+import com.spiderpig86.snowflake.lib.OverflowHandler;
 import com.spiderpig86.snowflake.time.DefaultTime;
 import com.spiderpig86.snowflake.time.Time;
 import java.time.Clock;
+import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.logging.Logger;
@@ -17,6 +19,11 @@ public class SnowflakeGenerator {
 
   private static final Logger logger = Logger.getLogger(SnowflakeGenerator.class.getName());
   private static final Lock lock = new ReentrantLock();
+  private static final ThreadLocalRandom random = ThreadLocalRandom.current();
+
+  // TODO move to some config object
+  private static final long DEFAULT_TIMER_SLEEP_MS = 100L;
+  private static final long DEFAULT_JITTER_MS = 500L;
 
   private final SnowflakeConfiguration snowflakeConfiguration;
   private final GeneratorConfiguration generatorConfiguration;
@@ -74,12 +81,12 @@ public class SnowflakeGenerator {
     if (previousTimestamp == timestamp) {
       if (sequence >= maxSequence) {
         // Handle overflow
-        // TODO other ways of handling this like throwing exception
-        // TODO set max recursive depth for retries with private next(retries) method
         logger.warning(
             String.format(
                 "Reached max sequence value of %d. Attempting to generate id again.", maxSequence));
-        return next();
+        handleSequenceOverflow();
+
+        return generateSnowflake();
       }
 
       // Times are the same, increment the sequence
@@ -113,6 +120,20 @@ public class SnowflakeGenerator {
         generatorConfiguration.getWorker() >= 0
             && generatorConfiguration.getWorker() <= snowflakeConfiguration.getMaxWorker(),
         "Provided worker value is out of bounds.");
+  }
+
+  /** Potentially blocking method depending on the overflow strategy configured. */
+  private void handleSequenceOverflow() {
+    switch (generatorConfiguration.getOverflowStrategy()) {
+      case SLEEP -> OverflowHandler.overflowSleep(DEFAULT_TIMER_SLEEP_MS).run();
+      case SLEEP_WITH_JITTER -> OverflowHandler.overflowSleepJitter(
+              random, DEFAULT_TIMER_SLEEP_MS, DEFAULT_JITTER_MS)
+          .run();
+      case SPIN_WAIT -> OverflowHandler.overflowSpinWait(() -> previousTimestamp, time::getTick)
+          .run();
+      case THROW_EXCEPTION -> OverflowHandler.overflowThrowException("sequence").run();
+      default -> throw new IllegalArgumentException("Unsupported overflow strategy provided");
+    }
   }
 
   private static Clock getClock() {

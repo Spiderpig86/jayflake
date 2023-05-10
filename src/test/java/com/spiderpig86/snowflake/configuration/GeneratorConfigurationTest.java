@@ -1,5 +1,6 @@
 package com.spiderpig86.snowflake.configuration;
 
+import com.spiderpig86.snowflake.lib.OverflowStrategy;
 import java.util.stream.Stream;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -11,13 +12,15 @@ public class GeneratorConfigurationTest {
 
   @ParameterizedTest
   @MethodSource("provideBuildValidInputs")
-  public void build_validInputs_succeeds(long dataCenter, long worker) {
+  public void build_validInputs_succeeds(
+      long dataCenter, long worker, OverflowStrategy overflowStrategy) {
     GeneratorConfiguration configuration =
         Assertions.assertDoesNotThrow(
             () ->
                 GeneratorConfiguration.builder()
                     .withDataCenter(dataCenter)
                     .withWorker(worker)
+                    .withOverflowStrategy(overflowStrategy)
                     .build());
 
     Assertions.assertEquals(dataCenter, configuration.getDataCenter());
@@ -25,23 +28,29 @@ public class GeneratorConfigurationTest {
   }
 
   private static Stream<Arguments> provideBuildValidInputs() {
-    return Stream.of(Arguments.of(0L, 0L), Arguments.of(12L, 34L));
+    return Stream.of(
+        Arguments.of(0L, 0L, OverflowStrategy.SLEEP),
+        Arguments.of(12L, 34L, OverflowStrategy.SLEEP));
   }
 
   @ParameterizedTest
   @MethodSource("provideBuildInvalidInputs")
   public void build_invalidInputs_throwsException(
-      long dataCenter, long worker, Class exceptionClass) {
+      long dataCenter, long worker, OverflowStrategy overflowStrategy, Class exceptionClass) {
     Assertions.assertThrows(
         exceptionClass,
         () ->
-            GeneratorConfiguration.builder().withDataCenter(dataCenter).withWorker(worker).build());
+            GeneratorConfiguration.builder()
+                .withDataCenter(dataCenter)
+                .withWorker(worker)
+                .withOverflowStrategy(overflowStrategy)
+                .build());
   }
 
   private static Stream<Arguments> provideBuildInvalidInputs() {
     return Stream.of(
-        Arguments.of(-1, 0, IllegalArgumentException.class),
-        Arguments.of(0, -1, IllegalArgumentException.class));
+        Arguments.of(-1, 0, OverflowStrategy.SLEEP, IllegalArgumentException.class),
+        Arguments.of(0, -1, OverflowStrategy.SLEEP, IllegalArgumentException.class));
   }
 
   @Test

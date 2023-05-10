@@ -5,6 +5,7 @@ import static org.mockito.Mockito.when;
 
 import com.spiderpig86.snowflake.configuration.GeneratorConfiguration;
 import com.spiderpig86.snowflake.configuration.SnowflakeConfiguration;
+import com.spiderpig86.snowflake.lib.OverflowStrategy;
 import com.spiderpig86.snowflake.time.DefaultTime;
 import com.spiderpig86.snowflake.time.Time;
 import java.time.Clock;
@@ -75,6 +76,7 @@ public class SnowflakeGeneratorTest {
                 GeneratorConfiguration.builder()
                     .withDataCenter(6L)
                     .withWorker(ANY_VALID_NUMBER)
+                    .withOverflowStrategy(OverflowStrategy.SLEEP)
                     .build(),
                 new DefaultTime(clock, Instant.now())),
             // Data center is too large
@@ -88,6 +90,7 @@ public class SnowflakeGeneratorTest {
                 GeneratorConfiguration.builder()
                     .withDataCenter(ANY_VALID_NUMBER)
                     .withWorker(6L)
+                    .withOverflowStrategy(OverflowStrategy.SLEEP)
                     .build(),
                 new DefaultTime(clock, Instant.now()))));
   }
@@ -147,7 +150,11 @@ public class SnowflakeGeneratorTest {
                     .withWorkerBits(6)
                     .withSequenceBits(12)
                     .build(),
-                GeneratorConfiguration.builder().withDataCenter(0L).withWorker(5L).build(),
+                GeneratorConfiguration.builder()
+                    .withDataCenter(0L)
+                    .withWorker(5L)
+                    .withOverflowStrategy(OverflowStrategy.SLEEP)
+                    .build(),
                 DefaultTime.getDefault(clock))));
   }
 
@@ -163,7 +170,11 @@ public class SnowflakeGeneratorTest {
     SnowflakeGenerator generator =
         SnowflakeGenerator.create(
             SnowflakeConfiguration.getDefault(),
-            GeneratorConfiguration.builder().withDataCenter(0L).withWorker(5L).build(),
+            GeneratorConfiguration.builder()
+                .withDataCenter(0L)
+                .withWorker(5L)
+                .withOverflowStrategy(OverflowStrategy.SLEEP)
+                .build(),
             DefaultTime.getDefault(c));
     for (int i = 0; i < generateCount; i++) {
       snowflakes.add(generator.next());
@@ -179,5 +190,53 @@ public class SnowflakeGeneratorTest {
       Assertions.assertEquals(seq, snowflake.getSequence());
       seq++;
     }
+  }
+
+  @ParameterizedTest
+  @MethodSource("provide_next_sequenceAtLimit_success")
+  public void next_sequenceAtLimit_success(
+      OverflowStrategy overflowStrategy, boolean shouldThrowException) {
+    // Arrange
+    Clock c = mock(Clock.class);
+    when(c.millis())
+        .thenReturn(EPOCH_MILLIS)
+        .thenReturn(EPOCH_MILLIS)
+        .thenReturn(EPOCH_MILLIS)
+        .thenReturn(EPOCH_MILLIS)
+        .thenReturn(EPOCH_MILLIS + 1);
+
+    // Act
+    SnowflakeGenerator generator =
+        SnowflakeGenerator.create(
+            SnowflakeConfiguration.builder()
+                .withTimestampBits(50)
+                .withDatacenterBits(5)
+                .withWorkerBits(7)
+                .withSequenceBits(1)
+                .build(),
+            GeneratorConfiguration.builder()
+                .withDataCenter(0L)
+                .withWorker(5L)
+                .withOverflowStrategy(overflowStrategy)
+                .build(),
+            DefaultTime.getDefault(c));
+    // Simulate 2 times
+    generator.next();
+    generator.next();
+
+    // Assert
+    if (shouldThrowException) {
+      Assertions.assertThrows(RuntimeException.class, generator::next);
+    } else {
+      Assertions.assertDoesNotThrow(generator::next);
+    }
+  }
+
+  private static Stream<Arguments> provide_next_sequenceAtLimit_success() {
+    return Stream.of(
+        Arguments.of(OverflowStrategy.SLEEP, false),
+        Arguments.of(OverflowStrategy.SLEEP_WITH_JITTER, false),
+        Arguments.of(OverflowStrategy.SPIN_WAIT, false),
+        Arguments.of(OverflowStrategy.THROW_EXCEPTION, true));
   }
 }
