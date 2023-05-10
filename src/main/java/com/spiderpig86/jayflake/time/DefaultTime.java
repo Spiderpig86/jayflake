@@ -1,6 +1,6 @@
-package com.spiderpig86.snowflake.time;
+package com.spiderpig86.jayflake.time;
 
-import static com.spiderpig86.snowflake.Utils.DEFAULT_EPOCH;
+import static com.spiderpig86.jayflake.Utils.DEFAULT_EPOCH;
 
 import java.time.Clock;
 import java.time.Instant;

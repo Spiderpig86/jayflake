@@ -1,7 +1,7 @@
-package com.spiderpig86.snowflake.configuration;
+package com.spiderpig86.jayflake.configuration;
 
 import com.google.common.base.Preconditions;
-import com.spiderpig86.snowflake.lib.OverflowStrategy;
+import com.spiderpig86.jayflake.lib.OverflowStrategy;
 import javax.annotation.Nonnull;
 import lombok.Getter;
 import lombok.ToString;

@@ -1,6 +1,6 @@
-package com.spiderpig86.snowflake;
+package com.spiderpig86.jayflake;
 
-import com.spiderpig86.snowflake.configuration.SnowflakeConfiguration;
+import com.spiderpig86.jayflake.configuration.SnowflakeConfiguration;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;

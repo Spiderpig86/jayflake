@@ -1,4 +1,4 @@
-package com.spiderpig86.snowflake.time;
+package com.spiderpig86.jayflake.time;
 
 import com.google.common.base.Preconditions;
 import java.time.Clock;

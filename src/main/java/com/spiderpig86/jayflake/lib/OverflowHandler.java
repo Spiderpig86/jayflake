@@ -1,4 +1,4 @@
-package com.spiderpig86.snowflake.lib;
+package com.spiderpig86.jayflake.lib;
 
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;

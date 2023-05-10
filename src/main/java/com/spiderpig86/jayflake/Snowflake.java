@@ -1,9 +1,9 @@
-package com.spiderpig86.snowflake;
+package com.spiderpig86.jayflake;
 
-import static com.spiderpig86.snowflake.Utils.getValueWithMask;
+import static com.spiderpig86.jayflake.Utils.getValueWithMask;
 
 import com.google.common.base.Preconditions;
-import com.spiderpig86.snowflake.configuration.SnowflakeConfiguration;
+import com.spiderpig86.jayflake.configuration.SnowflakeConfiguration;
 import javax.annotation.Nonnull;
 
 /** Wrapper class that represents a Snowflake id. */

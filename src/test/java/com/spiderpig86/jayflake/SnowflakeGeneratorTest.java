@@ -1,13 +1,13 @@
-package com.spiderpig86.snowflake;
+package com.spiderpig86.jayflake;
 
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-import com.spiderpig86.snowflake.configuration.GeneratorConfiguration;
-import com.spiderpig86.snowflake.configuration.SnowflakeConfiguration;
-import com.spiderpig86.snowflake.lib.OverflowStrategy;
-import com.spiderpig86.snowflake.time.DefaultTime;
-import com.spiderpig86.snowflake.time.Time;
+import com.spiderpig86.jayflake.configuration.GeneratorConfiguration;
+import com.spiderpig86.jayflake.configuration.SnowflakeConfiguration;
+import com.spiderpig86.jayflake.lib.OverflowStrategy;
+import com.spiderpig86.jayflake.time.DefaultTime;
+import com.spiderpig86.jayflake.time.Time;
 import java.time.Clock;
 import java.time.Instant;
 import java.util.ArrayList;

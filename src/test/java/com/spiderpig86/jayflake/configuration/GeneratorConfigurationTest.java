@@ -1,6 +1,6 @@
-package com.spiderpig86.snowflake.configuration;
+package com.spiderpig86.jayflake.configuration;
 
-import com.spiderpig86.snowflake.lib.OverflowStrategy;
+import com.spiderpig86.jayflake.lib.OverflowStrategy;
 import java.util.stream.Stream;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;

@@ -1,4 +1,4 @@
-package com.spiderpig86.snowflake.configuration;
+package com.spiderpig86.jayflake.configuration;
 
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Preconditions;

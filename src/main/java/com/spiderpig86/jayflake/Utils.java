@@ -1,4 +1,4 @@
-package com.spiderpig86.snowflake;
+package com.spiderpig86.jayflake;
 
 public class Utils {
 

@@ -1,7 +1,7 @@
-package com.spiderpig86.snowflake.lib;
+package com.spiderpig86.jayflake.lib;
 
 /**
- * Overflow strategy for {@link com.spiderpig86.snowflake.SnowflakeGenerator}. This is mainly used
+ * Overflow strategy for {@link com.spiderpig86.jayflake.SnowflakeGenerator}. This is mainly used
  * for the sequence portion of the id, but can be extended for other fields if needed.
  */
 public enum OverflowStrategy {

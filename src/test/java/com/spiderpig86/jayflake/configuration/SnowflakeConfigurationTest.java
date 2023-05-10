@@ -1,4 +1,4 @@
-package com.spiderpig86.snowflake.configuration;
+package com.spiderpig86.jayflake.configuration;
 
 import java.util.stream.Stream;
 import org.junit.jupiter.api.Assertions;
