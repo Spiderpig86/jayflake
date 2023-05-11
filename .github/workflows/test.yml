@@ -1,0 +1,22 @@
+name: Jayflake Unit Test
+
+on: [push, pull_request]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v2
+
+      - name: Set up JDK 19
+        uses: actions/setup-java@v2
+        with:
+          java-version: '19'
+
+      - name: Build with Gradle
+        run: ./gradlew build
+
+      - name: Run Tests with Gradle
+        run: ./gradlew test
