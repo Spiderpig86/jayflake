@@ -20,11 +20,6 @@ public class DefaultTime extends Time {
   }
 
   @Override
-  public long getTick() {
-    return getClock().millis() - getEpoch().toEpochMilli();
-  }
-
-  @Override
   public long getTickDurationMs() {
     return tickDurationMs;
   }

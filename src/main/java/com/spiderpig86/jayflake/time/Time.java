@@ -30,7 +30,9 @@ public abstract class Time {
    *
    * @return the current tick.
    */
-  public abstract long getTick();
+  public long getTick() {
+    return (getClock().millis() - getEpoch().toEpochMilli()) / getTickDurationMs();
+  }
 
   /**
    * Returns the length of time each tick is.
