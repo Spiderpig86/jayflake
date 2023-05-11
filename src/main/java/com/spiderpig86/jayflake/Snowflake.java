@@ -35,13 +35,13 @@ public class Snowflake {
         "Provided timestamp exceeds " + "Snowflake max timestamp");
     Preconditions.checkArgument(
         dataCenter <= snowflakeConfiguration.getMaxDataCenter(),
-        "Provided timestamp exceeds " + "Snowflake max timestamp");
+        "Provided timestamp exceeds " + "Snowflake max data center");
     Preconditions.checkArgument(
         worker <= snowflakeConfiguration.getMaxWorker(),
-        "Provided timestamp exceeds " + "Snowflake max timestamp");
+        "Provided timestamp exceeds " + "Snowflake max worker");
     Preconditions.checkArgument(
         sequence <= snowflakeConfiguration.getMaxSequence(),
-        "Provided timestamp exceeds " + "Snowflake max timestamp");
+        "Provided timestamp exceeds " + "Snowflake max sequence");
 
     this.value =
         (timestamp << timestampShift)
