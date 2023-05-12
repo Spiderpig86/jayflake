@@ -16,6 +16,9 @@ jobs:
           java-version: '19'
           distribution: 'adopt'
 
+      - name: Set executable permission for gradlew
+        run: chmod +x ./gradlew
+
       - name: Build with Gradle
         run: ./gradlew build
 
