@@ -30,7 +30,7 @@ public class DefaultTimeTest {
     // Assert
     Assertions.assertEquals(BEFORE, defaultTime.getEpoch());
     Assertions.assertEquals(300000L, defaultTime.getTick());
-    Assertions.assertEquals(1000L, defaultTime.getTickDurationMs());
+    Assertions.assertEquals(1, defaultTime.getTickDurationMs());
   }
 
   @Test
@@ -44,6 +44,6 @@ public class DefaultTimeTest {
     // Assert
     Assertions.assertEquals(Instant.ofEpochMilli(DEFAULT_EPOCH), defaultTime.getEpoch());
     Assertions.assertEquals(NOW.minusMillis(DEFAULT_EPOCH).toEpochMilli(), defaultTime.getTick());
-    Assertions.assertEquals(1000L, defaultTime.getTickDurationMs());
+    Assertions.assertEquals(1, defaultTime.getTickDurationMs());
   }
 }

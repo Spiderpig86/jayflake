@@ -4,7 +4,6 @@ import static com.spiderpig86.jayflake.Utils.DEFAULT_EPOCH;
 
 import java.time.Clock;
 import java.time.Instant;
-import java.util.concurrent.TimeUnit;
 import javax.annotation.Nonnull;
 import lombok.ToString;
 
@@ -16,7 +15,7 @@ public class DefaultTime extends Time {
 
   public DefaultTime(@Nonnull final Clock clock, @Nonnull final Instant epoch) {
     super(clock, epoch);
-    this.tickDurationMs = TimeUnit.SECONDS.toMillis(1);
+    this.tickDurationMs = 1;
   }
 
   @Override
