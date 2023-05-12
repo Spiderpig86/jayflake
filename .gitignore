@@ -43,5 +43,3 @@ bin/
 
 gradle/**
 .idea/**
-gradlew
-gradlew.bat
