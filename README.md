@@ -1,17 +1,35 @@
 # ❄ Jayflake
 
-A Java implementation similar to Twitter's now deprecated [Snowflake ID](https://blog.twitter.
-com/engineering/en_us/a/2010/announcing-snowflake) that is thread-safe. Note that this is only the library for 
+A Java implementation similar to Twitter's now deprecated [Snowflake ID](https://blog.twitter.com/engineering/en_us/a/2010/announcing-snowflake) 
+that is thread-safe. Note that this is only the library for 
 generating the ids. It does not include a service that provides ids to calling backend services.
+
+> Note: This project does not include a backend service for id generation.
  
 ## Usage
 
 ```java
 // Default generator
+SnowflakeGenerator generator = SnowflakeGenerator.createDefault();
 
+// Generator with custom configurations
+SnowflakeGenerator generator = SnowflakeConfiguration.builder()
+      .withTimestampBits(41)
+      .withDatacenterBits(8)
+      .withWorkerBits(2)
+      .withSequenceBits(12)
+      .build(),
+    GeneratorConfiguration.builder()
+      .withDataCenter(1L)
+      .withWorker(6L)
+      .withOverflowStrategy(OverflowStrategy.SPIN_WAIT)
+      .build(),
+    new DefaultTime(Clock.systemDefaultZone(), Instant.now()));
 ```
 
 ## Installation
+
+TBA
 
 ## How it works
 
@@ -127,3 +145,5 @@ Currently, this applies to the `sequence` bits. If the timestamp overflows, you 
 hands.
 
 ## License
+
+This project is licensed under the MIT license. Please see the [license](./LICENSE) for more details.
