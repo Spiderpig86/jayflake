@@ -1,6 +1,8 @@
 plugins {
-    id("java")
+    id("java-library")
     id("com.diffplug.spotless") version "6.18.0"
+    id("maven-publish")
+    id("signing")
 }
 
 group = "org.example"
@@ -33,5 +35,57 @@ spotless {
     java {
         target("src/**/*.java") // configure the files to apply the formatting to
         googleJavaFormat() // apply the Google Java formatter
+    }
+}
+
+java {
+    withJavadocJar()
+    withSourcesJar()
+}
+
+publishing {
+    publications {
+        create<MavenPublication>("mavenJava") {
+            artifactId = "jayflake"
+            version = "0.1"
+            from(components["java"])
+
+            pom {
+                name.set("Jayflake")
+                description.set("Snowflake ids for Java.")
+                url.set("https://github.com/Spiderpig86/jayflake")
+
+                licenses {
+                    license {
+                        name.set("MIT License")
+                        url.set("https://github.com/Spiderpig86/jayflake/blob/master/LICENSE")
+                    }
+                }
+
+                developers {
+                    developer {
+                        id.set("spiderpig86")
+                        name.set("Stanley Lim")
+                    }
+                }
+
+                scm {
+                    connection.set("scm:git:git:https://github.com/Spiderpig86/jayflake.git")
+                    developerConnection.set("scm:git:ssh://github.com:Spiderpig86/jayflake.git")
+                    url.set("https://github.com/Spiderpig86/jayflake")
+                }
+            }
+        }
+    }
+}
+
+
+signing {
+    sign(publishing.publications["mavenJava"])
+}
+
+tasks.javadoc {
+    if (JavaVersion.current().isJava9Compatible) {
+        (options as StandardJavadocDocletOptions).addBooleanOption("html5", true)
     }
 }
