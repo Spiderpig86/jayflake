@@ -21,7 +21,6 @@ public class SnowflakeGenerator {
   private static final Lock lock = new ReentrantLock();
   private static final ThreadLocalRandom random = ThreadLocalRandom.current();
 
-  // TODO move to some config object
   private static final long DEFAULT_TIMER_SLEEP_MS = 100L;
   private static final long DEFAULT_JITTER_MS = 500L;
 
