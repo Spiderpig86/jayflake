@@ -46,13 +46,27 @@ public class SnowflakeGenerator {
     this.maxSequence = snowflakeConfiguration.getMaxSequence();
   }
 
-  public static SnowflakeGenerator createDefault() {
+  /**
+   * Return default instance of {@link SnowflakeGenerator} with default {@link
+   * SnowflakeConfiguration}, {@link GeneratorConfiguration} and {@link DefaultTime}.
+   *
+   * @return a default instance of {@link SnowflakeGenerator}.
+   */
+  public static SnowflakeGenerator getDefault() {
     return new SnowflakeGenerator(
         SnowflakeConfiguration.getDefault(),
         GeneratorConfiguration.getDefault(),
         DefaultTime.getDefault(getClock()));
   }
 
+  /**
+   * Constructs {@link SnowflakeGenerator} with custom configurations.
+   *
+   * @param snowflakeConfiguration user provided {@link SnowflakeConfiguration}.
+   * @param generatorConfiguration user provided {@link GeneratorConfiguration}.
+   * @param time user provided {@link Time}.
+   * @return {@link SnowflakeGenerator} with custom parameters.
+   */
   public static SnowflakeGenerator create(
       @Nonnull final SnowflakeConfiguration snowflakeConfiguration,
       @Nonnull final GeneratorConfiguration generatorConfiguration,
@@ -60,6 +74,11 @@ public class SnowflakeGenerator {
     return new SnowflakeGenerator(snowflakeConfiguration, generatorConfiguration, time);
   }
 
+  /**
+   * Generates new {@link Snowflake} in a thread-safe manner.
+   *
+   * @return a new {@link Snowflake}.
+   */
   @Nullable
   public Snowflake next() {
     try {

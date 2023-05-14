@@ -142,7 +142,7 @@ public class SnowflakeGeneratorTest {
 
   private Stream<Arguments> provide_next_generators_success() {
     return Stream.of(
-        Arguments.of(SnowflakeGenerator.createDefault()),
+        Arguments.of(SnowflakeGenerator.getDefault()),
         Arguments.of(
             SnowflakeGenerator.create(
                 SnowflakeConfiguration.builder()

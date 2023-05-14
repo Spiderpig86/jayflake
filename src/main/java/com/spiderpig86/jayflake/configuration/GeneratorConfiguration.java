@@ -6,6 +6,11 @@ import javax.annotation.Nonnull;
 import lombok.Getter;
 import lombok.ToString;
 
+/**
+ * Configuration for {@link com.spiderpig86.jayflake.SnowflakeGenerator}. This stores all settings
+ * that change what and how the generator does when it comes to creating new {@link
+ * com.spiderpig86.jayflake.Snowflake}.
+ */
 @Getter
 @ToString
 public class GeneratorConfiguration {
@@ -61,6 +66,12 @@ public class GeneratorConfiguration {
     return new Builder();
   }
 
+  /**
+   * Generates a default configuration which sets the data center to 0, worker to 0, and overflow
+   * strategy to SLEEP.
+   *
+   * @return {@link GeneratorConfiguration} with default settings.
+   */
   public static GeneratorConfiguration getDefault() {
     return new GeneratorConfiguration.Builder()
         .withDataCenter(0L)

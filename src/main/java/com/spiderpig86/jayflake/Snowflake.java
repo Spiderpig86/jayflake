@@ -51,6 +51,11 @@ public class Snowflake {
     this.snowflakeConfiguration = Preconditions.checkNotNull(snowflakeConfiguration);
   }
 
+  /**
+   * Returns raw Snowflake id.
+   *
+   * @return {@link Snowflake} in its long form.
+   */
   public long value() {
     return value;
   }

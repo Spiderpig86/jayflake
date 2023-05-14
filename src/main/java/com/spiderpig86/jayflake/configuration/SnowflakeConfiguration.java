@@ -5,7 +5,7 @@ import com.google.common.base.Preconditions;
 import lombok.Getter;
 import lombok.ToString;
 
-/** Configuration for the Snowflake id itself. */
+/** Configuration for the Snowflake id itself. These settings determine the format of the id. */
 @Getter
 @ToString
 public class SnowflakeConfiguration {

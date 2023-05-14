@@ -23,6 +23,12 @@ public class DefaultTime extends Time {
     return tickDurationMs;
   }
 
+  /**
+   * Gets default instance of {@link DefaultTime} using the default epoch.
+   *
+   * @param clock instance of {@link Clock} used for time computation.
+   * @return instance of {@link DefaultTime} with default settings.
+   */
   public static Time getDefault(@Nonnull final Clock clock) {
     return new DefaultTime(clock, Instant.ofEpochMilli(DEFAULT_EPOCH));
   }

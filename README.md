@@ -10,7 +10,7 @@ generating the ids. It does not include a service that provides ids to calling b
 
 ```java
 // Default generator
-SnowflakeGenerator generator = SnowflakeGenerator.createDefault();
+SnowflakeGenerator generator = SnowflakeGenerator.getDefault();
 
 // Generator with custom configurations
 SnowflakeGenerator generator = SnowflakeConfiguration.builder()
@@ -30,6 +30,8 @@ SnowflakeGenerator generator = SnowflakeConfiguration.builder()
 ## Installation
 
 TBA
+
+> Java 9 or above is required.
 
 ## How it works
 
