@@ -23,7 +23,7 @@ dependencies {
     testImplementation("org.junit.jupiter:junit-jupiter")
     testCompileOnly("org.projectlombok:lombok:1.18.26")
     testAnnotationProcessor("org.projectlombok:lombok:1.18.26")
-    testImplementation("org.mockito:mockito-core:3.+")
+    testImplementation("org.mockito:mockito-core:5.+")
     testImplementation("org.mockito:mockito-junit-jupiter:3.6.28")
 }
 
