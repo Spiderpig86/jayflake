@@ -5,7 +5,7 @@ plugins {
     id("signing")
 }
 
-group = "org.example"
+group = "io.github.spiderpig86"
 version = "1.0-SNAPSHOT"
 
 repositories {
