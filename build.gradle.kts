@@ -1,6 +1,6 @@
 plugins {
     id("java-library")
-    id("com.diffplug.spotless") version "6.19.0"
+    id("com.diffplug.spotless") version "6.21.0"
     id("maven-publish")
     id("signing")
 }
