@@ -16,7 +16,7 @@ dependencies {
     compileOnly("org.projectlombok:lombok:1.18.28")
     annotationProcessor("org.projectlombok:lombok:1.18.28")
     // https://mvnrepository.com/artifact/com.google.guava/guava
-    implementation("com.google.guava:guava:32.1.2-jre")
+    implementation("com.google.guava:guava:32.1.3-jre")
 
 
     testImplementation(platform("org.junit:junit-bom:5.10.0"))
