@@ -29,9 +29,21 @@ SnowflakeGenerator generator = SnowflakeConfiguration.builder()
 
 ## Installation
 
-TBA
-
 > Java 9 or above is required.
+
+### Maven
+
+```xml
+<dependency>
+  <groupId>io.github.spiderpig86</groupId>
+  <artifactId>jayflake</artifactId>
+  <version>0.1</version>
+</dependency>
+```
+
+### Gradle
+
+TBA
 
 ## How it works
 
