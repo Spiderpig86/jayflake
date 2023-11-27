@@ -43,7 +43,9 @@ SnowflakeGenerator generator = SnowflakeConfiguration.builder()
 
 ### Gradle
 
-TBA
+```groovy
+implementation 'io.github.spiderpig86:jayflake:0.1'
+```
 
 ## How it works
 
