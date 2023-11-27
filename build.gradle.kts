@@ -1,3 +1,5 @@
+import java.net.URI
+
 plugins {
     id("java-library")
     id("com.diffplug.spotless") version "6.19.0"
@@ -77,6 +79,16 @@ publishing {
             }
         }
     }
+    repositories {
+        maven {
+            name = "OSSHR"
+            url = URI("https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/")
+            credentials {
+                username = project.properties["ossrhUsername"].toString()
+                password = project.properties["ossrhPassword"].toString()
+            }
+        }
+    }
 }
 
 
@@ -88,4 +100,10 @@ tasks.javadoc {
     if (JavaVersion.current().isJava9Compatible) {
         (options as StandardJavadocDocletOptions).addBooleanOption("html5", true)
     }
+}
+
+// For debugging
+task("printProperties") {
+    println(project.findProperty("signing"))
+    println(project.findProperty("ossrhUsername").toString())
 }
