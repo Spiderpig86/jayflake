@@ -144,11 +144,11 @@ public class SnowflakeGenerator {
   private void handleSequenceOverflow() {
     switch (generatorConfiguration.getOverflowStrategy()) {
       case SLEEP -> OverflowHandler.overflowSleep(DEFAULT_TIMER_SLEEP_MS).run();
-      case SLEEP_WITH_JITTER -> OverflowHandler.overflowSleepJitter(
-              random, DEFAULT_TIMER_SLEEP_MS, DEFAULT_JITTER_MS)
-          .run();
-      case SPIN_WAIT -> OverflowHandler.overflowSpinWait(() -> previousTimestamp, time::getTick)
-          .run();
+      case SLEEP_WITH_JITTER ->
+          OverflowHandler.overflowSleepJitter(random, DEFAULT_TIMER_SLEEP_MS, DEFAULT_JITTER_MS)
+              .run();
+      case SPIN_WAIT ->
+          OverflowHandler.overflowSpinWait(() -> previousTimestamp, time::getTick).run();
       case THROW_EXCEPTION -> OverflowHandler.overflowThrowException("sequence").run();
       default -> throw new IllegalArgumentException("Unsupported overflow strategy provided");
     }
