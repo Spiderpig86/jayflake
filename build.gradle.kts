@@ -26,7 +26,7 @@ dependencies {
     testCompileOnly("org.projectlombok:lombok:1.18.34")
     testAnnotationProcessor("org.projectlombok:lombok:1.18.34")
     testImplementation("org.mockito:mockito-core:5.+")
-    testImplementation("org.mockito:mockito-junit-jupiter:5.5.0")
+    testImplementation("org.mockito:mockito-junit-jupiter:5.14.2")
 }
 
 tasks.test {
