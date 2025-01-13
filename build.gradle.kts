@@ -2,7 +2,7 @@ import java.net.URI
 
 plugins {
     id("java-library")
-    id("com.diffplug.spotless") version "6.25.0"
+    id("com.diffplug.spotless") version "7.0.1"
     id("maven-publish")
     id("signing")
 }
